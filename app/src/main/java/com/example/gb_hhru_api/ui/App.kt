@@ -5,8 +5,8 @@ import com.example.gb_hhru_api.R
 import com.example.gb_hhru_api.di.AppComponent
 import com.example.gb_hhru_api.di.DaggerAppComponent
 import com.example.gb_hhru_api.di.modules.AppModule
-
-const val LAST_SEARCH_TEXT_PREF_NAME = "lastSearchText"
+import com.example.gb_hhru_api.mvp.model.cache.IPreferencesCache
+import com.example.gb_hhru_api.mvp.model.cache.SharedPreferencesCache
 
 class App : Application() {
 
@@ -25,18 +25,11 @@ class App : Application() {
             .build()
     }
 
-    fun getLastSearchText(): String {
-        val lastSearchText = applicationContext
-            .getSharedPreferences("app", MODE_PRIVATE)
-            .getString(LAST_SEARCH_TEXT_PREF_NAME, null)
-        return lastSearchText ?: getString(R.string.default_search_text)
+    fun getDefaultSearchText(): String {
+        return getString(R.string.default_search_text)
     }
 
-    fun setLastSearchText(text: String) {
-        var editor =  applicationContext
-            .getSharedPreferences("app", MODE_PRIVATE)
-            .edit()
-        editor.putString(LAST_SEARCH_TEXT_PREF_NAME, text)
-        editor.apply()
+    fun getSharedPreferences(): IPreferencesCache {
+        return SharedPreferencesCache(applicationContext.getSharedPreferences("app", MODE_PRIVATE));
     }
 }

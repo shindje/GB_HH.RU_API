@@ -1,6 +1,6 @@
 package com.example.gb_hhru_api.di.modules
 
-import com.example.gb_hhru_api.R
+import com.example.gb_hhru_api.mvp.model.cache.IPreferencesCache
 import com.example.gb_hhru_api.ui.App
 import dagger.Module
 import dagger.Provides
@@ -18,5 +18,8 @@ class AppModule(val app: App) {
     fun mainThread(): Scheduler = AndroidSchedulers.mainThread()
 
     @Provides
-    fun lastSearchText(): String = app.getLastSearchText()
+    fun prefencesCache(): IPreferencesCache = app.getSharedPreferences()
+
+    @Provides
+    fun defaultSearchText(): String = app.getDefaultSearchText()
 }

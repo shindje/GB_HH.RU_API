@@ -1,15 +1,23 @@
 package com.example.gb_hhru_api.mvp.presenter
 
+import com.example.gb_hhru_api.mvp.entity.Search
 import com.example.gb_hhru_api.mvp.entity.Vacancy
+import com.example.gb_hhru_api.mvp.model.cache.IPreferencesCache
+import com.example.gb_hhru_api.mvp.model.network.INetworkStatus
 import com.example.gb_hhru_api.mvp.presenter.list.IVacancyListPresenter
 import com.example.gb_hhru_api.mvp.model.repo.IVacanciesRepo
 import com.example.gb_hhru_api.mvp.view.SearchView
 import com.example.gb_hhru_api.mvp.view.list.VacancyItemView
 import com.example.gb_hhru_api.navigation.Screens
+import com.example.gb_hhru_api.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
+
+const val PAGE = "page"
+const val PAGES = "pages"
+const val SEARCH_TEXT = "search_text"
 
 class SearchPresenter () : MvpPresenter<SearchView>() {
     @Inject
@@ -19,7 +27,19 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
     @Inject
     lateinit var router: Router
     @Inject
-    lateinit var lastSearchText: String
+    lateinit var prefs: IPreferencesCache
+    @Inject
+    lateinit var networkStatus: INetworkStatus
+    @Inject
+    lateinit var defaultSearchText: String
+
+    lateinit var search: Search
+    lateinit var searchText: String
+
+    fun init() {
+        search = Search(null, prefs.get(PAGE, "0"), prefs.get(PAGES, "0"))
+        searchText = prefs.get(SEARCH_TEXT, defaultSearchText)
+    }
 
     class VacancyListPresenter : IVacancyListPresenter {
         override var itemClickListener: ((VacancyItemView) -> Unit)? = null
@@ -34,7 +54,6 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
             view.setAddress(vacancy.address?.raw)
             view.setRequirement(vacancy.snippet?.requirementShort())
             view.setResponsibility(vacancy.snippet?.responsibilityShort())
-            //user.avatarUrl?.let { view.loadImage(it) }
         }
 
         override fun getCount() = vacancies.size
@@ -45,20 +64,26 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData(lastSearchText)
+        loadData(searchText, search.page)
 
         vacancyListPresenter.itemClickListener = { view ->
             router.navigateTo(Screens.VacancyScreen(vacancyListPresenter.vacancies[view.pos]))
         }
     }
 
-    fun loadData(text: String) {
-        vacanciesRepo.getVacancies(text)
+    fun loadData(text: String, page: String?) {
+        vacanciesRepo.getVacancies(text, page, search.pages)
             .observeOn(mainThread)
-            .subscribe({ search ->
+            .subscribe({ s ->
+                search = s
+                prefs.put(PAGE, search.page)
+                prefs.put(PAGES, search.pages)
+
                 vacancyListPresenter.vacancies.clear()
-                vacancyListPresenter.vacancies.addAll(search.items.asList())
+                s.items?.apply { vacancyListPresenter.vacancies.addAll(this.asList()) }
                 viewState.updateVacanciesList()
+                viewState.updatePage(((s.page?.toInt() ?: 0) + 1).toString())
+                viewState.updatePages(s.pages)
             }, {
                 println("Error: ${it.message}")
             })
@@ -69,8 +94,39 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
         return true
     }
 
-    fun searchClick(text: String) {
-        viewState.saveLastSearchText()
-        loadData(text)
+    fun searchClick(text: String, page: String) {
+        networkStatus.isOnlineSingle().subscribe { isOnline ->
+            if (isOnline) {
+                searchText = text
+                prefs.put(SEARCH_TEXT, searchText)
+                loadData(text, (page.toInt() - 1).toString())
+            } else
+                viewState.showError("Сеть недоступна")
+        }
+    }
+
+    fun prevClick(text: String) {
+        networkStatus.isOnlineSingle().subscribe { isOnline ->
+            if (isOnline) {
+                if (search.page != null && search.page != "0")
+                    loadData(text, (search.page!!.toInt() - 1).toString())
+                else
+                    viewState.showError("Показана 1 страница")
+            } else
+                viewState.showError("Сеть недоступна")
+        }
+    }
+
+    fun nextClick(text: String) {
+        networkStatus.isOnlineSingle().subscribe { isOnline ->
+            if (isOnline) {
+                if (search.page != null && search.page!!.toInt() < (search.pages?:"0").toInt())
+                    loadData(text, (search.page!!.toInt() + 1).toString())
+                else
+                    viewState.showError("Показана последняя страница")
+            } else
+                viewState.showError("Сеть недоступна")
+        }
+
     }
 }

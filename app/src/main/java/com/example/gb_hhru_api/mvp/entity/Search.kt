@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Search(
-    @Expose val items: Array<Vacancy>,
-    @Expose val found: String?,
+    @Expose val items: Array<Vacancy>?,
+    @Expose val page: String?,
+    @Expose val pages: String?,
 ) : Parcelable

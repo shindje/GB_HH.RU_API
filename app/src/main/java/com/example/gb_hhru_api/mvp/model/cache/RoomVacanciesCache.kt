@@ -8,17 +8,17 @@ import io.reactivex.rxjava3.core.Single
 
 class RoomVacanciesCache(val db: Database): IVacanciesCache {
 
-    override fun putVacancies(vacancys: List<Vacancy>) =
+    override fun putVacancies(vacancies: List<Vacancy>?) =
         Completable.fromCallable {
-            val roomVacancys = vacancys.map { vacancy -> RoomVacancy(
+            val roomVacancys = vacancies?.map { vacancy -> RoomVacancy(
                 vacancy.id ?: "", vacancy.name ?: "", vacancy.url,
                 vacancy.salary?.from, vacancy.salary?.to, vacancy.salary?.currency, vacancy.address?.raw,
                 vacancy.employer?.id, vacancy.employer?.name,
                 vacancy.employer?.logoUrls?.original, vacancy.employer?.logoUrls?.size90, vacancy.employer?.logoUrls?.size240,
                 vacancy.snippet?.requirement, vacancy.snippet?.responsibility)}
             db.vacancyDao.deleteAll()
-            db.vacancyDao.insert(roomVacancys)
-            vacancys
+            roomVacancys?.apply { db.vacancyDao.insert(this) }
+            vacancies
         }
 
     override fun getVacancies() =

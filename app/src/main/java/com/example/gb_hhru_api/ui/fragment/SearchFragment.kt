@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gb_hhru_api.R
 import com.example.gb_hhru_api.mvp.presenter.SearchPresenter
@@ -24,6 +25,7 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
     val presenter by moxyPresenter {
         SearchPresenter().apply {
             App.instance.appComponent.inject(this)
+            this.init()
         }
     }
 
@@ -33,19 +35,29 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
         View.inflate(context, R.layout.fragment_search, null)
 
     override fun init() {
-        tv_search_text.setText(App.instance.getLastSearchText())
+        et_search_text.setText(presenter.defaultSearchText)
         rv_vacancies.layoutManager = LinearLayoutManager(requireContext())
         adapter = VacanciesRvAdapter(presenter.vacancyListPresenter)
         rv_vacancies.adapter = adapter
-        btn_search.setOnClickListener { presenter.searchClick(tv_search_text.text.toString()) }
+        btn_search.setOnClickListener { presenter.searchClick(et_search_text.text.toString(), tv_page.text.toString()) }
+        btn_prev.setOnClickListener { presenter.prevClick(et_search_text.text.toString()) }
+        btn_next.setOnClickListener { presenter.nextClick(et_search_text.text.toString()) }
     }
 
     override fun updateVacanciesList() {
         adapter?.notifyDataSetChanged()
     }
 
-    override fun saveLastSearchText() {
-        App.instance.setLastSearchText(tv_search_text.text.toString())
+    override fun updatePage(page: String?) {
+        tv_page.text = page
+    }
+
+    override fun updatePages(pages: String?) {
+        tv_max_page.text = pages
+    }
+
+    override fun showError(s: String) {
+        Toast.makeText(context, s, Toast.LENGTH_SHORT).show()
     }
 
     override fun backPressed() = presenter.backClick()

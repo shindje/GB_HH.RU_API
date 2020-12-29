@@ -2,4 +2,8 @@
     <string name="app_name">Вакансии HH.RU (API)</string>
     <string name="btn_search">Найти</string>
     <string name="default_search_text">Android</string>
+    <string name="pages_lable">Страницы:</string>
+    <string name="btn_prev_label"><![CDATA[<]]></string>
+    <string name="pages_delim_label">из</string>
+    <string name="btn_next_label"><![CDATA[>]]></string>
 </resources>

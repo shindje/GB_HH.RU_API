@@ -5,6 +5,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 interface IVacanciesCache {
-    fun putVacancies(users: List<Vacancy>): Completable
+    fun putVacancies(users: List<Vacancy>?): Completable
     fun getVacancies(): Single<List<Vacancy>>
 }

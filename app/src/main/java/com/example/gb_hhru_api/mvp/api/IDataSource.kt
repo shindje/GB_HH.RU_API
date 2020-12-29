@@ -6,18 +6,6 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.http.*
 
 interface IDataSource {
-//    @GET("users")
-//    fun getUsers(): Single<List<GithubUser>>
-//
-//    @GET("users/{login}")
-//    fun getUser(@Path("login") login: String): Single<GithubUser>
-//
-//    @GET
-//    fun getUserRepos(@Url url: String?): Single<List<GithubRepository>>
-
-    /*@POST
-    fun getAPIKey*/
-
     @GET ("vacancies")
-    fun getVacancies(@Query("text") text: String): Single<Search>
+    fun getVacancies(@Query("text") text: String, @Query("page") page: String): Single<Search>
 }

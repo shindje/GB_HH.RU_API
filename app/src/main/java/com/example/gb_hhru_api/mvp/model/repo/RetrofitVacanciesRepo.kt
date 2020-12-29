@@ -10,17 +10,16 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class RetrofitVacanciesRepo (val api: IDataSource, val networkStatus: INetworkStatus, val vacanciesCache: IVacanciesCache) :
     IVacanciesRepo {
-    override fun getVacancies(text: String) = networkStatus.isOnlineSingle().flatMap { isOnline ->
+    override fun getVacancies(text: String, page: String?, pages: String?) = networkStatus.isOnlineSingle().flatMap { isOnline ->
         if (isOnline) {
-            api.getVacancies(text)
+            api.getVacancies(text, page?:"0")
                 .flatMap { search ->
-
-                    vacanciesCache.putVacancies(search.items.asList()).andThen(Single.just(search))
+                    vacanciesCache.putVacancies(search.items?.asList()).andThen(Single.just(search))
                 }
         } else {
             var single: Single<Search>? = null
             vacanciesCache.getVacancies().subscribe({
-                single = Single.just(Search(it.toTypedArray(), null))
+                single = Single.just(Search(it.toTypedArray(), page, pages))
             }, {
                 it.printStackTrace()
             })
