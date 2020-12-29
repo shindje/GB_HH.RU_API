@@ -39,9 +39,9 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
         rv_vacancies.layoutManager = LinearLayoutManager(requireContext())
         adapter = VacanciesRvAdapter(presenter.vacancyListPresenter)
         rv_vacancies.adapter = adapter
-        btn_search.setOnClickListener { presenter.searchClick(et_search_text.text.toString(), tv_page.text.toString()) }
-        btn_prev.setOnClickListener { presenter.prevClick(et_search_text.text.toString()) }
-        btn_next.setOnClickListener { presenter.nextClick(et_search_text.text.toString()) }
+        btn_search.setOnClickListener { presenter.searchClick(et_search_text.text.toString()) }
+        btn_prev.setOnClickListener { presenter.prevClick() }
+        btn_next.setOnClickListener { presenter.nextClick() }
     }
 
     override fun updateVacanciesList() {

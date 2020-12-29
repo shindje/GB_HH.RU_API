@@ -78,6 +78,8 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
                 search = s
                 prefs.put(PAGE, search.page)
                 prefs.put(PAGES, search.pages)
+                searchText = text
+                prefs.put(SEARCH_TEXT, searchText)
 
                 vacancyListPresenter.vacancies.clear()
                 s.items?.apply { vacancyListPresenter.vacancies.addAll(this.asList()) }
@@ -94,22 +96,20 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
         return true
     }
 
-    fun searchClick(text: String, page: String) {
+    fun searchClick(text: String) {
         networkStatus.isOnlineSingle().subscribe { isOnline ->
             if (isOnline) {
-                searchText = text
-                prefs.put(SEARCH_TEXT, searchText)
-                loadData(text, (page.toInt() - 1).toString())
+                loadData(text, if (text.equals(searchText)) search.page else "0")
             } else
                 viewState.showError("Сеть недоступна")
         }
     }
 
-    fun prevClick(text: String) {
+    fun prevClick() {
         networkStatus.isOnlineSingle().subscribe { isOnline ->
             if (isOnline) {
                 if (search.page != null && search.page != "0")
-                    loadData(text, (search.page!!.toInt() - 1).toString())
+                    loadData(searchText, (search.page!!.toInt() - 1).toString())
                 else
                     viewState.showError("Показана 1 страница")
             } else
@@ -117,11 +117,11 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
         }
     }
 
-    fun nextClick(text: String) {
+    fun nextClick() {
         networkStatus.isOnlineSingle().subscribe { isOnline ->
             if (isOnline) {
                 if (search.page != null && search.page!!.toInt() < (search.pages?:"0").toInt())
-                    loadData(text, (search.page!!.toInt() + 1).toString())
+                    loadData(searchText, (search.page!!.toInt() + 1).toString())
                 else
                     viewState.showError("Показана последняя страница")
             } else
