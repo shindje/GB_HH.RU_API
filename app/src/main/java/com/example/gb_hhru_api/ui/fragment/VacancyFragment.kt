@@ -53,8 +53,8 @@ class VacancyFragment: MvpAppCompatFragment(), VacancyView, BackButtonListener {
         tv_emloyer_name.text = vacancy?.employer?.name
         tv_salary.text = vacancy?.salary?.toString()
         tv_address.text = vacancy?.address?.raw
-        tv_requirement.text = Html.fromHtml(vacancy?.snippet?.requirement, 0)
-        tv_responsibility.text = Html.fromHtml(vacancy?.snippet?.responsibility, 0)
+        vacancy?.snippet?.requirement?.apply { tv_requirement.text = Html.fromHtml(this, 0) }
+        vacancy?.snippet?.responsibility?.apply { tv_responsibility.text = Html.fromHtml(this, 0) }
         vacancy?.employer?.logoUrls?.original?.apply { imageLoader.loadInto(this, iv_image) }
         btn_vacancy_url.setOnClickListener { presenter.onShowInBrowserClick() }
     }
