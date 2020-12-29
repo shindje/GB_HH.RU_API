@@ -19,4 +19,11 @@ class VacancyPresenter (val vacancy: Vacancy?) : MvpPresenter<VacancyView>() {
         router.exit()
         return true
     }
+
+    fun onShowInBrowserClick() {
+        if (vacancy?.alternateUrl != null)
+            viewState.showInBrowser(vacancy.alternateUrl)
+        else
+            viewState.showError("URL пуст")
+    }
 }

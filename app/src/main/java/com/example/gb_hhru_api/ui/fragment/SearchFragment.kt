@@ -1,5 +1,7 @@
 package com.example.gb_hhru_api.ui.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
+
 class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
 
     companion object {
@@ -31,7 +34,11 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
 
     var adapter: VacanciesRvAdapter? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
         View.inflate(context, R.layout.fragment_search, null)
 
     override fun init() {
@@ -42,6 +49,7 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
         btn_search.setOnClickListener { presenter.searchClick(et_search_text.text.toString()) }
         btn_prev.setOnClickListener { presenter.prevClick() }
         btn_next.setOnClickListener { presenter.nextClick() }
+        btn_search_url.setOnClickListener { presenter.onShowInBrowserClick() }
     }
 
     override fun updateVacanciesList() {
@@ -58,6 +66,10 @@ class SearchFragment :  MvpAppCompatFragment(), SearchView, BackButtonListener {
 
     override fun showError(s: String) {
         Toast.makeText(context, s, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showInBrowser(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     override fun backPressed() = presenter.backClick()

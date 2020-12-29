@@ -1,11 +1,14 @@
 package com.example.gb_hhru_api.ui.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.gb_hhru_api.R
 import com.example.gb_hhru_api.mvp.entity.Vacancy
 import com.example.gb_hhru_api.mvp.model.image.IImageLoader
@@ -53,8 +56,17 @@ class VacancyFragment: MvpAppCompatFragment(), VacancyView, BackButtonListener {
         tv_requirement.text = Html.fromHtml(vacancy?.snippet?.requirement, 0)
         tv_responsibility.text = Html.fromHtml(vacancy?.snippet?.responsibility, 0)
         vacancy?.employer?.logoUrls?.original?.apply { imageLoader.loadInto(this, iv_image) }
+        btn_vacancy_url.setOnClickListener { presenter.onShowInBrowserClick() }
     }
 
     override fun backPressed() = presenter.backClick()
+
+    override fun showError(s: String) {
+        Toast.makeText(context, s, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showInBrowser(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
 
 }

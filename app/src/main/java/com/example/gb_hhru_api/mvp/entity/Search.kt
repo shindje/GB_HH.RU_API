@@ -10,4 +10,5 @@ data class Search(
     @Expose val items: Array<Vacancy>?,
     @Expose val page: String?,
     @Expose val pages: String?,
+    @Expose val alternateUrl: String?,
 ) : Parcelable

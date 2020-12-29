@@ -18,6 +18,7 @@ import javax.inject.Inject
 const val PAGE = "page"
 const val PAGES = "pages"
 const val SEARCH_TEXT = "search_text"
+const val ALT_URL = "alternate_url"
 
 class SearchPresenter () : MvpPresenter<SearchView>() {
     @Inject
@@ -37,7 +38,7 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
     lateinit var searchText: String
 
     fun init() {
-        search = Search(null, prefs.get(PAGE, "0"), prefs.get(PAGES, "0"))
+        search = Search(null, prefs.get(PAGE, "0"), prefs.get(PAGES, "0"), prefs.get(ALT_URL))
         searchText = prefs.get(SEARCH_TEXT, defaultSearchText)
     }
 
@@ -72,12 +73,13 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
     }
 
     fun loadData(text: String, page: String?) {
-        vacanciesRepo.getVacancies(text, page, search.pages)
+        vacanciesRepo.getVacancies(text, page, search.pages, search.alternateUrl)
             .observeOn(mainThread)
             .subscribe({ s ->
                 search = s
                 prefs.put(PAGE, search.page)
                 prefs.put(PAGES, search.pages)
+                prefs.put(ALT_URL, search.alternateUrl)
                 searchText = text
                 prefs.put(SEARCH_TEXT, searchText)
 
@@ -127,6 +129,12 @@ class SearchPresenter () : MvpPresenter<SearchView>() {
             } else
                 viewState.showError("Сеть недоступна")
         }
+    }
 
+    fun onShowInBrowserClick() {
+        if (search.alternateUrl != null)
+            viewState.showInBrowser(search.alternateUrl!!)
+        else
+            viewState.showError("URL пуст")
     }
 }

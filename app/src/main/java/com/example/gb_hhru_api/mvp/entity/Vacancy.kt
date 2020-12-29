@@ -12,5 +12,6 @@ data class Vacancy(
     @Expose val salary: Salary?,
     @Expose val employer: Employer?,
     @Expose val address: Address?,
-    @Expose val snippet: Snippet?
+    @Expose val snippet: Snippet?,
+    @Expose val alternateUrl: String?,
 ) : Parcelable

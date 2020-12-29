@@ -19,4 +19,5 @@ class RoomVacancy(
     var employerLogoUrlSize240: String?,
     var requirement: String?,
     var responsibility: String?,
+    var alternateUrl: String?,
 )

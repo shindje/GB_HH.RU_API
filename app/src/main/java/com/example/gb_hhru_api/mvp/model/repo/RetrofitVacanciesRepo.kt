@@ -8,9 +8,8 @@ import com.example.gb_hhru_api.mvp.model.network.INetworkStatus
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class RetrofitVacanciesRepo (val api: IDataSource, val networkStatus: INetworkStatus, val vacanciesCache: IVacanciesCache) :
-    IVacanciesRepo {
-    override fun getVacancies(text: String, page: String?, pages: String?) = networkStatus.isOnlineSingle().flatMap { isOnline ->
+class RetrofitVacanciesRepo (val api: IDataSource, val networkStatus: INetworkStatus, val vacanciesCache: IVacanciesCache): IVacanciesRepo {
+    override fun getVacancies(text: String, page: String?, pages: String?, altURL: String?) = networkStatus.isOnlineSingle().flatMap { isOnline ->
         if (isOnline) {
             api.getVacancies(text, page?:"0")
                 .flatMap { search ->
@@ -19,7 +18,7 @@ class RetrofitVacanciesRepo (val api: IDataSource, val networkStatus: INetworkSt
         } else {
             var single: Single<Search>? = null
             vacanciesCache.getVacancies().subscribe({
-                single = Single.just(Search(it.toTypedArray(), page, pages))
+                single = Single.just(Search(it.toTypedArray(), page, pages, altURL))
             }, {
                 it.printStackTrace()
             })

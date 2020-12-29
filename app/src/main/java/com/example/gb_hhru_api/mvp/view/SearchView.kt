@@ -12,4 +12,6 @@ interface SearchView: MvpView {
     fun updatePages(pages: String?)
     @OneExecution
     fun showError(s: String)
+    @OneExecution
+    fun showInBrowser(url: String)
 }
