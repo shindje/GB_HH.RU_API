@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/default_search_text"
+        android:textAlignment="center"
+        android:layout_toStartOf="@+id/btn_search_url"
+        android:layout_marginEnd="8dp"/>
+
+    <Button
+        android:id="@+id/btn_search_url"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:drawableStart="@drawable/ic_baseline_open_in_browser_24"
+        android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_below = "@+id/et_search_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/btn_prev"
+        android:text="@string/btn_search" />
+
+    <Button
+        android:id="@+id/btn_prev"
+        android:layout_below = "@+id/et_search_text"
+        android:layout_toStartOf="@id/tv_page"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:paddingTop = "0dp"
+        android:paddingBottom = "0dp"
+        android:text="@string/btn_prev_label" />
+
+    <TextView
+        android:id="@+id/tv_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_search_text"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/tv_pages_delim_label"
+        android:textSize="18sp"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/tv_pages_delim_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_search_text"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/tv_max_page"
+        android:text="@string/pages_delim_label"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_max_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_search_text"
+        android:layout_marginTop="8dp"
+        android:layout_toStartOf="@id/btn_next"
+        android:textSize="18sp"
+        tools:text="100" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_alignParentEnd = "true"
+        android:layout_below = "@+id/et_search_text"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:paddingTop = "0dp"
+        android:paddingBottom = "0dp"
+        android:text="@string/btn_next_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_vacancies"
+        android:layout_margin="8dp"
+        android:layout_below = "@+id/btn_prev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"/>
+
+</RelativeLayout>
