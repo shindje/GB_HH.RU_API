@@ -25,4 +25,16 @@ data class Snippet(
     fun responsibilityShort(): String {
         return cut(responsibility)
     }
+
+    fun requirementLong(): String? {
+        return requirement
+    }
+
+    fun responsibilityLong(): String? {
+        return responsibility
+    }
+
+    fun shortsAsArray(): Array<String> {
+        return arrayOf(requirementShort(), responsibilityShort())
+    }
 }
