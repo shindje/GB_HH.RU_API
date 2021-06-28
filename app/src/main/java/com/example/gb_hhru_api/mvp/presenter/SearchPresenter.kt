@@ -9,7 +9,6 @@ import com.example.gb_hhru_api.mvp.model.repo.IVacanciesRepo
 import com.example.gb_hhru_api.mvp.view.SearchView
 import com.example.gb_hhru_api.mvp.view.list.VacancyItemView
 import com.example.gb_hhru_api.navigation.Screens
-import com.example.gb_hhru_api.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -21,6 +20,15 @@ const val SEARCH_TEXT = "search_text"
 const val ALT_URL = "alternate_url"
 
 class SearchPresenter () : MvpPresenter<SearchView>() {
+
+    constructor(m_mainThread: Scheduler, m_vacanciesRepo: IVacanciesRepo, m_networkStatus: INetworkStatus, m_prefs: IPreferencesCache, m_defaultSearchText: String) : this() {
+        mainThread = m_mainThread
+        vacanciesRepo = m_vacanciesRepo
+        networkStatus = m_networkStatus
+        prefs = m_prefs
+        defaultSearchText = m_defaultSearchText
+    }
+
     @Inject
     lateinit var mainThread: Scheduler
     @Inject
